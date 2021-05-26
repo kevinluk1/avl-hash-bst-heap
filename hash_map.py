@@ -165,12 +165,14 @@ class HashMap:
         """
         g = DynamicArray()
         for i in range(self.buckets.length()):
-            if self.buckets[i] is not None:
-                # print(self.buckets[i])
-                g.append(self.buckets[i])
-
+            for z in self.buckets[i]:
+                if z.key is not None:
+                    g.append(z.key)
 
         return g
+
+
+
 
 
 # BASIC TESTING
