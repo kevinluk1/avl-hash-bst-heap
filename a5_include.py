@@ -32,6 +32,10 @@ class LinkedList:
         self.head = None
         self.size = 0
 
+    def __repr__(self):
+        return str(self.head)
+
+
     def __str__(self) -> str:
         """ Return content of SLL in human-readable form """
         content = ''
@@ -115,6 +119,10 @@ class DynamicArray:
         """ Initialize new dynamic array """
         self.data = arr.copy() if arr else []
 
+    def __repr__(self):
+        return str(self.data)
+
+
     def __iter__(self):
         """
         Disable iterator capability for DynamicArray class
@@ -133,7 +141,8 @@ class DynamicArray:
         """ Return content of dynamic array in human-readable form """
         return str(self.data)
 
-
+    def __repr__(self):
+        return self.data
 
     def append(self, value: object) -> None:
         """ Add new element at the end of the array """

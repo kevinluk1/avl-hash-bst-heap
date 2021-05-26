@@ -165,17 +165,38 @@ class HashMap:
         """
         TODO: Write this implementation
         """
+        print(self.buckets)
 
-        capacity_added = new_capacity - self.buckets.length()
-        for i in range(capacity_added):
-            self.buckets.append(LinkedList())
-        self.capacity += capacity_added
+        new_da = DynamicArray()
+        for i in range(new_capacity):
+            new_da.append(LinkedList())
+        self.capacity = new_capacity
 
         for i in range(self.buckets.length()):
-            if (self.buckets.get_at_index(i).length()) != 0:
-                g = (self.buckets.get_at_index(i))
-                for i in g:
-                    self.put(i.key, i.value)
+            if self.buckets[i].length() != 0:
+                ll = self.buckets.get_at_index(i)
+                for node in ll:
+                    self.put(node.key, node.value)
+
+
+        print(self.buckets)
+
+
+
+
+
+
+        #
+        # capacity_added = new_capacity - self.buckets.length()
+        # for i in range(capacity_added):
+        #     self.buckets.append(LinkedList())
+        # self.capacity += capacity_added
+        #
+        # for i in range(self.buckets.length()):
+        #     if (self.buckets.get_at_index(i).length()) != 0:
+        #         g = (self.buckets.get_at_index(i))
+        #         for i in g:
+        #             self.put(i.key, i.value)
 
 
     def get_keys(self) -> DynamicArray:
@@ -352,15 +373,15 @@ if __name__ == "__main__":
     m.resize_table(30)
     print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
     #
-    #
-    # print("\nPDF - resize example 2")
-    # print("----------------------")
-    # m = HashMap(75, hash_function_2)
-    # keys = [i for i in range(1, 1000, 13)]
-    # for key in keys:
-    #     m.put(str(key), key * 42)
-    # print(m.size, m.capacity)
-    #
+    # #
+    print("\nPDF - resize example 2")
+    print("----------------------")
+    m = HashMap(75, hash_function_2)
+    keys = [i for i in range(1, 1000, 13)]
+    for key in keys:
+        m.put(str(key), key * 42)
+    print(m.size, m.capacity)
+
     # for capacity in range(111, 1000, 117):
     #     m.resize_table(capacity)
     #
@@ -372,7 +393,7 @@ if __name__ == "__main__":
     #         result &= m.contains_key(str(key))
     #         result &= not m.contains_key(str(key + 1))
     #     print(capacity, result, m.size, m.capacity, round(m.table_load(), 2))
-    #
+    # #
     #
     # print("\nPDF - get_keys example 1")
     # print("------------------------")
