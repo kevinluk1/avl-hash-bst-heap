@@ -133,6 +133,8 @@ class DynamicArray:
         """ Return content of dynamic array in human-readable form """
         return str(self.data)
 
+
+
     def append(self, value: object) -> None:
         """ Add new element at the end of the array """
         self.data.append(value)
