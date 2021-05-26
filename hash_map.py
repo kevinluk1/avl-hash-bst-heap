@@ -60,7 +60,14 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        pass
+        if self.size == 0:
+            pass
+        for i in range(self.capacity):
+            self.buckets.set_at_index(i, LinkedList())
+        self.size = 0
+
+
+
 
     def get(self, key: str) -> object:
         """
@@ -220,16 +227,16 @@ if __name__ == "__main__":
     #     if i % 10 == 0:
     #         print(m.table_load(), m.size, m.capacity)
     #
-    # print("\nPDF - clear example 1")
-    # print("---------------------")
-    # m = HashMap(100, hash_function_1)
-    # print(m.size, m.capacity)
-    # m.put('key1', 10)
-    # m.put('key2', 20)
-    # m.put('key1', 30)
-    # print(m.size, m.capacity)
-    # m.clear()
-    # print(m.size, m.capacity)
+    print("\nPDF - clear example 1")
+    print("---------------------")
+    m = HashMap(100, hash_function_1)
+    print(m.size, m.capacity)
+    m.put('key1', 10)
+    m.put('key2', 20)
+    m.put('key1', 30)
+    print(m.size, m.capacity)
+    m.clear()
+    print(m.size, m.capacity)
     #
     #
     # print("\nPDF - clear example 2")
@@ -355,17 +362,17 @@ if __name__ == "__main__":
     #     print(capacity, result, m.size, m.capacity, round(m.table_load(), 2))
     #
     #
-    print("\nPDF - get_keys example 1")
-    print("------------------------")
-    m = HashMap(10, hash_function_2)
-    for i in range(100, 200, 10):
-        m.put(str(i), str(i * 10))
-    print(m.get_keys())
-
-    m.resize_table(1)
-    print(m.get_keys())
-
-    m.put('200', '2000')
-    m.remove('100')
-    m.resize_table(2)
-    print(m.get_keys())
+    # print("\nPDF - get_keys example 1")
+    # print("------------------------")
+    # m = HashMap(10, hash_function_2)
+    # for i in range(100, 200, 10):
+    #     m.put(str(i), str(i * 10))
+    # print(m.get_keys())
+    #
+    # m.resize_table(1)
+    # print(m.get_keys())
+    #
+    # m.put('200', '2000')
+    # m.remove('100')
+    # m.resize_table(2)
+    # print(m.get_keys())
