@@ -122,7 +122,17 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        return False
+        array_size = self.capacity
+        hash = self.hash_function(key)
+        index = hash % array_size
+        linked_list_at_index = self.buckets[index]
+
+        if self.size == 0:
+            return False
+        if linked_list_at_index.contains(key) is not None:
+            return True
+        else:
+            return False
 
     def empty_buckets(self) -> int:
         """
@@ -158,7 +168,7 @@ class HashMap:
 
 # BASIC TESTING
 if __name__ == "__main__":
-    print("\nPDF - empty_buckets example 1")
+    # print("\nPDF - empty_buckets example 1")
     # print("-----------------------------")
     # m = HashMap(100, hash_function_1)
     # print(m.empty_buckets(), m.size, m.capacity)
@@ -227,13 +237,13 @@ if __name__ == "__main__":
     # print(m.size, m.capacity)
     #
     #
-    print("\nPDF - put example 1")
-    print("-------------------")
-    m = HashMap(50, hash_function_1)
-    for i in range(150):
-        m.put('str' + str(i), i * 100)
-        if i % 25 == 24:
-            print(m.empty_buckets(), m.table_load(), m.size, m.capacity)
+    # print("\nPDF - put example 1")
+    # print("-------------------")
+    # m = HashMap(50, hash_function_1)
+    # for i in range(150):
+    #     m.put('str' + str(i), i * 100)
+    #     if i % 25 == 24:
+    #         print(m.empty_buckets(), m.table_load(), m.size, m.capacity)
     #
     #
     # print("\nPDF - put example 2")
@@ -245,35 +255,35 @@ if __name__ == "__main__":
     #         print(m.empty_buckets(), m.table_load(), m.size, m.capacity)
     #
     #
-    # print("\nPDF - contains_key example 1")
-    # print("----------------------------")
-    # m = HashMap(10, hash_function_1)
-    # print(m.contains_key('key1'))
-    # m.put('key1', 10)
-    # m.put('key2', 20)
-    # m.put('key3', 30)
-    # print(m.contains_key('key1'))
-    # print(m.contains_key('key4'))
-    # print(m.contains_key('key2'))
-    # print(m.contains_key('key3'))
-    # m.remove('key3')
-    # print(m.contains_key('key3'))
+    print("\nPDF - contains_key example 1")
+    print("----------------------------")
+    m = HashMap(10, hash_function_1)
+    print(m.contains_key('key1'))
+    m.put('key1', 10)
+    m.put('key2', 20)
+    m.put('key3', 30)
+    print(m.contains_key('key1'))
+    print(m.contains_key('key4'))
+    print(m.contains_key('key2'))
+    print(m.contains_key('key3'))
+    m.remove('key3')
+    print(m.contains_key('key3'))
     #
     #
-    # print("\nPDF - contains_key example 2")
-    # print("----------------------------")
-    # m = HashMap(75, hash_function_2)
-    # keys = [i for i in range(1, 1000, 20)]
-    # for key in keys:
-    #     m.put(str(key), key * 42)
-    # print(m.size, m.capacity)
-    # result = True
-    # for key in keys:
-    #     # all inserted keys must be present
-    #     result &= m.contains_key(str(key))
-    #     # NOT inserted keys must be absent
-    #     result &= not m.contains_key(str(key + 1))
-    # print(result)
+    print("\nPDF - contains_key example 2")
+    print("----------------------------")
+    m = HashMap(75, hash_function_2)
+    keys = [i for i in range(1, 1000, 20)]
+    for key in keys:
+        m.put(str(key), key * 42)
+    print(m.size, m.capacity)
+    result = True
+    for key in keys:
+        # all inserted keys must be present
+        result &= m.contains_key(str(key))
+        # NOT inserted keys must be absent
+        result &= not m.contains_key(str(key + 1))
+    print(result)
     #
     #
     # print("\nPDF - get example 1")
