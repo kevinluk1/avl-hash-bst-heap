@@ -155,7 +155,7 @@ class HashMap:
 
 # BASIC TESTING
 if __name__ == "__main__":
-    # print("\nPDF - empty_buckets example 1")
+    print("\nPDF - empty_buckets example 1")
     # print("-----------------------------")
     # m = HashMap(100, hash_function_1)
     # print(m.empty_buckets(), m.size, m.capacity)
