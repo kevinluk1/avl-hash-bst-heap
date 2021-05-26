@@ -66,7 +66,18 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        return None
+
+        array_size = self.capacity
+        hash = self.hash_function(key)
+        index = hash % array_size
+        linked_list_at_index = self.buckets[index]
+
+        g = linked_list_at_index.contains(key)
+        if g is not None:
+            return g.value
+        else:
+            return None
+
 
     def put(self, key: str, value: object) -> None:
         """
@@ -76,7 +87,7 @@ class HashMap:
         hash = self.hash_function(key)
 
         index = hash % array_size
-        print(key + " hash index " + str(index))
+        # print(key + " hash index " + str(index))
         linked_list_at_index = self.buckets[index]
 
         if linked_list_at_index.contains(key) is not None: # key already exists in DA
@@ -86,14 +97,23 @@ class HashMap:
         else:
             linked_list_at_index.insert(key, value)  # key does not exist in DA
 
-        print(self.__str__())
+        # print(self.__str__())
 
 
     def remove(self, key: str) -> None:
         """
         TODO: Write this implementation
         """
-        pass
+        array_size = self.capacity
+        hash = self.hash_function(key)
+        index = hash % array_size
+        linked_list_at_index = self.buckets[index]
+
+        if linked_list_at_index.contains(key):
+            linked_list_at_index.remove(key)
+        else:
+            pass
+
 
     def contains_key(self, key: str) -> bool:
         """
@@ -135,18 +155,18 @@ class HashMap:
 
 # BASIC TESTING
 if __name__ == "__main__":
-    print("\nPDF - empty_buckets example 1")
-    print("-----------------------------")
-    m = HashMap(100, hash_function_1)
-    print(m.empty_buckets(), m.size, m.capacity)
-    m.put('key1', 10)
-    print(m.empty_buckets(), m.size, m.capacity)
-    m.put('key2', 20)
-    print(m.empty_buckets(), m.size, m.capacity)
-    m.put('key1', 30)
-    print(m.empty_buckets(), m.size, m.capacity)
-    m.put('key4', 40)
-    print(m.empty_buckets(), m.size, m.capacity)
+    # print("\nPDF - empty_buckets example 1")
+    # print("-----------------------------")
+    # m = HashMap(100, hash_function_1)
+    # print(m.empty_buckets(), m.size, m.capacity)
+    # m.put('key1', 10)
+    # print(m.empty_buckets(), m.size, m.capacity)
+    # m.put('key2', 20)
+    # print(m.empty_buckets(), m.size, m.capacity)
+    # m.put('key1', 30)
+    # print(m.empty_buckets(), m.size, m.capacity)
+    # m.put('key4', 40)
+    # print(m.empty_buckets(), m.size, m.capacity)
 
     #
     # print("\nPDF - empty_buckets example 2")
@@ -259,8 +279,8 @@ if __name__ == "__main__":
     # print(m.get('key'))
     # m.put('key1', 10)
     # print(m.get('key1'))
-    #
-    #
+    # #
+    # #
     # print("\nPDF - get example 2")
     # print("-------------------")
     # m = HashMap(150, hash_function_2)
@@ -270,7 +290,7 @@ if __name__ == "__main__":
     # for i in range(200, 300, 21):
     #     print(i, m.get(str(i)), m.get(str(i)) == i * 10)
     #     print(i + 1, m.get(str(i + 1)), m.get(str(i + 1)) == (i + 1) * 10)
-    #
+    # #
     #
     # print("\nPDF - remove example 1")
     # print("----------------------")
@@ -281,7 +301,7 @@ if __name__ == "__main__":
     # m.remove('key1')
     # print(m.get('key1'))
     # m.remove('key4')
-    #
+
     #
     # print("\nPDF - resize example 1")
     # print("----------------------")
