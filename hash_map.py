@@ -93,9 +93,11 @@ class HashMap:
         if linked_list_at_index.contains(key) is not None: # key already exists in DA
             linked_list_at_index.remove(key)
             linked_list_at_index.insert(key, value)
+            self.size+=1
 
         else:
             linked_list_at_index.insert(key, value)  # key does not exist in DA
+            self.size+=1
 
         # print(self.__str__())
 
@@ -111,6 +113,7 @@ class HashMap:
 
         if linked_list_at_index.contains(key):
             linked_list_at_index.remove(key)
+            self.size -=1
         else:
             pass
 
