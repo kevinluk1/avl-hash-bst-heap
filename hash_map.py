@@ -93,7 +93,7 @@ class HashMap:
         if linked_list_at_index.contains(key) is not None: # key already exists in DA
             linked_list_at_index.remove(key)
             linked_list_at_index.insert(key, value)
-            self.size+=1
+
 
         else:
             linked_list_at_index.insert(key, value)  # key does not exist in DA
@@ -227,13 +227,13 @@ if __name__ == "__main__":
     # print(m.size, m.capacity)
     #
     #
-    # print("\nPDF - put example 1")
-    # print("-------------------")
-    # m = HashMap(50, hash_function_1)
-    # for i in range(150):
-    #     m.put('str' + str(i), i * 100)
-    #     if i % 25 == 24:
-    #         print(m.empty_buckets(), m.table_load(), m.size, m.capacity)
+    print("\nPDF - put example 1")
+    print("-------------------")
+    m = HashMap(50, hash_function_1)
+    for i in range(150):
+        m.put('str' + str(i), i * 100)
+        if i % 25 == 24:
+            print(m.empty_buckets(), m.table_load(), m.size, m.capacity)
     #
     #
     # print("\nPDF - put example 2")
