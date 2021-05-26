@@ -56,14 +56,15 @@ class HashMap:
             out += str(i) + ': ' + str(list) + '\n'
         return out
 
-    def clear(self) -> None:
+    def clear(self) -> None:  # need to finish resize table first
         """
         TODO: Write this implementation
         """
-        if self.size == 0:
-            pass
+        print("cap: ")
+        print(self.capacity)
         for i in range(self.capacity):
             self.buckets.set_at_index(i, LinkedList())
+
         self.size = 0
 
 
@@ -90,17 +91,16 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        array_size = self.capacity
+        array_capacity = self.capacity
         hash = self.hash_function(key)
+        index = hash % array_capacity
 
-        index = hash % array_size
         # print(key + " hash index " + str(index))
         linked_list_at_index = self.buckets[index]
 
         if linked_list_at_index.contains(key) is not None: # key already exists in DA
             linked_list_at_index.remove(key)
             linked_list_at_index.insert(key, value)
-
 
         else:
             linked_list_at_index.insert(key, value)  # key does not exist in DA
@@ -113,9 +113,9 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        array_size = self.capacity
+        array_capacity = self.capacity
         hash = self.hash_function(key)
-        index = hash % array_size
+        index = hash % array_capacity
         linked_list_at_index = self.buckets[index]
 
         if linked_list_at_index.contains(key):
@@ -129,9 +129,9 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        array_size = self.capacity
+        array_capacity = self.capacity
         hash = self.hash_function(key)
-        index = hash % array_size
+        index = hash % array_capacity
         linked_list_at_index = self.buckets[index]
 
         if self.size == 0:
@@ -160,11 +160,23 @@ class HashMap:
         """
         return 0.0
 
+
     def resize_table(self, new_capacity: int) -> None:
         """
         TODO: Write this implementation
         """
-        pass
+
+        capacity_added = new_capacity - self.buckets.length()
+        for i in range(capacity_added):
+            self.buckets.append(LinkedList())
+        self.capacity += capacity_added
+
+        for i in range(self.buckets.length()):
+            if (self.buckets.get_at_index(i).length()) != 0:
+                g = (self.buckets.get_at_index(i))
+                for i in g:
+                    self.put(i.key, i.value)
+
 
     def get_keys(self) -> DynamicArray:
         """
@@ -227,18 +239,18 @@ if __name__ == "__main__":
     #     if i % 10 == 0:
     #         print(m.table_load(), m.size, m.capacity)
     #
-    print("\nPDF - clear example 1")
-    print("---------------------")
-    m = HashMap(100, hash_function_1)
-    print(m.size, m.capacity)
-    m.put('key1', 10)
-    m.put('key2', 20)
-    m.put('key1', 30)
-    print(m.size, m.capacity)
-    m.clear()
-    print(m.size, m.capacity)
-    #
-    #
+    # print("\nPDF - clear example 1")
+    # print("---------------------")
+    # m = HashMap(100, hash_function_1)
+    # print(m.size, m.capacity)
+    # m.put('key1', 10)
+    # m.put('key2', 20)
+    # m.put('key1', 30)
+    # print(m.size, m.capacity)
+    # m.clear()
+    # print(m.size, m.capacity)
+    # #
+    # #
     # print("\nPDF - clear example 2")
     # print("---------------------")
     # m = HashMap(50, hash_function_1)
@@ -332,13 +344,13 @@ if __name__ == "__main__":
     # m.remove('key4')
 
     #
-    # print("\nPDF - resize example 1")
-    # print("----------------------")
-    # m = HashMap(20, hash_function_1)
-    # m.put('key1', 10)
-    # print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
-    # m.resize_table(30)
-    # print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
+    print("\nPDF - resize example 1")
+    print("----------------------")
+    m = HashMap(20, hash_function_1)
+    m.put('key1', 10)
+    print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
+    m.resize_table(30)
+    print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
     #
     #
     # print("\nPDF - resize example 2")
