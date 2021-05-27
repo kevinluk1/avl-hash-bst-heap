@@ -160,7 +160,7 @@ class HashMap:
         """
 
         if new_capacity < 1:
-            pass
+            return None
 
         self.capacity = new_capacity
         array_capacity = self.capacity
