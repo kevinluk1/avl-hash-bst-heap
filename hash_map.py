@@ -67,9 +67,6 @@ class HashMap:
 
         self.size = 0
 
-
-
-
     def get(self, key: str) -> object:
         """
         TODO: Write this implementation
@@ -86,7 +83,6 @@ class HashMap:
         else:
             return None
 
-
     def put(self, key: str, value: object) -> None:
         """
         TODO: Write this implementation
@@ -98,16 +94,15 @@ class HashMap:
         # print(key + " hash index " + str(index))
         linked_list_at_index = self.buckets[index]
 
-        if linked_list_at_index.contains(key) is not None: # key already exists in DA
+        if linked_list_at_index.contains(key) is not None:  # key already exists in DA
             linked_list_at_index.remove(key)
             linked_list_at_index.insert(key, value)
 
         else:
             linked_list_at_index.insert(key, value)  # key does not exist in DA
-            self.size+=1
+            self.size += 1
 
         # print(self.__str__())
-
 
     def remove(self, key: str) -> None:
         """
@@ -120,10 +115,9 @@ class HashMap:
 
         if linked_list_at_index.contains(key):
             linked_list_at_index.remove(key)
-            self.size -=1
+            self.size -= 1
         else:
             pass
-
 
     def contains_key(self, key: str) -> bool:
         """
@@ -160,29 +154,52 @@ class HashMap:
         """
         return 0.0
 
-
     def resize_table(self, new_capacity: int) -> None:
         """
         TODO: Write this implementation
         """
 
+        #  create a new array
+        #  replicate put function so that it places items into index of the new array
+        # use set at index
 
-        new_map = HashMap(new_capacity, hash_function_1)
         self.capacity = new_capacity
-        for i in range(self.buckets.length()):
-            if self.buckets[i].length() != 0:
-                ll = self.buckets.get_at_index(i)
-                for node in ll:
-                    new_map.put(node.key, node.value)
+        array_capacity = self.capacity
+        replacement_buckets = DynamicArray()
+        temp_array = DynamicArray()
+
+        for i in range(new_capacity):
+            replacement_buckets.append(LinkedList())  # fill replacement buckets array with empty buckets
+
+        # fill a temp array with only the linked lists where size !=0
+        for i in range(self.buckets.length()):  # traverse through original buckets
+            if self.buckets[i].length() != 0:  # if the linked list in bucket is not empty, append to temp array
+                linked_list_at_index = self.buckets.get_at_index(i)
+                temp_array.append(linked_list_at_index)
+
+        # for each linked list in temp_array, enter the linked list and traverse the nodes
+        for i in range(temp_array.length()):  # traverse through all linked lists in temp_array
+            SLL = temp_array[i]
+            for node in SLL:  # traverse through each node for the linked list
+                key = node.key
+                value = node.value
+                hash = self.hash_function(key)  # hash the key to find the index that we will insert the key,value into as a new node of the linked list at the index
+                index = hash % array_capacity
+                replacement_buckets[index].insert(key, value)
+        self.buckets = replacement_buckets
+
+        # new_map = HashMap(new_capacity, hash_function_2)
+        # self.capacity = new_capacity
+        # new_map.capacity = new_capacity
+        # for i in range(self.buckets.length()):
+        #     if self.buckets[i].length() != 0:
+        #         ll = self.buckets.get_at_index(i)
+        #         for node in ll:
+        #             new_map.put(node.key, node.value)
 
         # print(new_map.buckets)
-        self.buckets = new_map.buckets
+        # self.buckets = new_map.buckets
         # print(self.buckets)
-
-
-
-
-
 
         #
         # capacity_added = new_capacity - self.buckets.length()
@@ -196,7 +213,6 @@ class HashMap:
         #         for i in g:
         #             self.put(i.key, i.value)
 
-
     def get_keys(self) -> DynamicArray:
         """
         TODO: Write this implementation
@@ -208,9 +224,6 @@ class HashMap:
                     g.append(z.key)
 
         return g
-
-
-
 
 
 # BASIC TESTING
@@ -370,7 +383,6 @@ if __name__ == "__main__":
     print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
     m.resize_table(30)
     print(m.size, m.capacity, m.get('key1'), m.contains_key('key1'))
-    #
     # #
     print("\nPDF - resize example 2")
     print("----------------------")
@@ -382,17 +394,17 @@ if __name__ == "__main__":
 
     for capacity in range(111, 1000, 117):
         m.resize_table(capacity)
-    #
+        #
         m.put('some key', 'some value')
         result = m.contains_key('some key')
         m.remove('some key')
-    #
+        #
         for key in keys:
             result &= m.contains_key(str(key))
             result &= not m.contains_key(str(key + 1))
         print(capacity, result, m.size, m.capacity, round(m.table_load(), 2))
-    # #
     #
+
     # print("\nPDF - get_keys example 1")
     # print("------------------------")
     # m = HashMap(10, hash_function_2)
