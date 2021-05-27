@@ -165,21 +165,19 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        print(self.buckets)
 
-        new_da = DynamicArray()
-        for i in range(new_capacity):
-            new_da.append(LinkedList())
+
+        new_map = HashMap(new_capacity, hash_function_1)
         self.capacity = new_capacity
-
         for i in range(self.buckets.length()):
             if self.buckets[i].length() != 0:
                 ll = self.buckets.get_at_index(i)
                 for node in ll:
-                    self.put(node.key, node.value)
+                    new_map.put(node.key, node.value)
 
-
-        print(self.buckets)
+        # print(new_map.buckets)
+        self.buckets = new_map.buckets
+        # print(self.buckets)
 
 
 
@@ -382,17 +380,17 @@ if __name__ == "__main__":
         m.put(str(key), key * 42)
     print(m.size, m.capacity)
 
-    # for capacity in range(111, 1000, 117):
-    #     m.resize_table(capacity)
+    for capacity in range(111, 1000, 117):
+        m.resize_table(capacity)
     #
-    #     m.put('some key', 'some value')
-    #     result = m.contains_key('some key')
-    #     m.remove('some key')
+        m.put('some key', 'some value')
+        result = m.contains_key('some key')
+        m.remove('some key')
     #
-    #     for key in keys:
-    #         result &= m.contains_key(str(key))
-    #         result &= not m.contains_key(str(key + 1))
-    #     print(capacity, result, m.size, m.capacity, round(m.table_load(), 2))
+        for key in keys:
+            result &= m.contains_key(str(key))
+            result &= not m.contains_key(str(key + 1))
+        print(capacity, result, m.size, m.capacity, round(m.table_load(), 2))
     # #
     #
     # print("\nPDF - get_keys example 1")
