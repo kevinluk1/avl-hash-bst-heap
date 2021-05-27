@@ -159,9 +159,8 @@ class HashMap:
         TODO: Write this implementation
         """
 
-        #  create a new array
-        #  replicate put function so that it places items into index of the new array
-        # use set at index
+        if new_capacity < 1:
+            pass
 
         self.capacity = new_capacity
         array_capacity = self.capacity
@@ -187,31 +186,6 @@ class HashMap:
                 index = hash % array_capacity
                 replacement_buckets[index].insert(key, value)
         self.buckets = replacement_buckets
-
-        # new_map = HashMap(new_capacity, hash_function_2)
-        # self.capacity = new_capacity
-        # new_map.capacity = new_capacity
-        # for i in range(self.buckets.length()):
-        #     if self.buckets[i].length() != 0:
-        #         ll = self.buckets.get_at_index(i)
-        #         for node in ll:
-        #             new_map.put(node.key, node.value)
-
-        # print(new_map.buckets)
-        # self.buckets = new_map.buckets
-        # print(self.buckets)
-
-        #
-        # capacity_added = new_capacity - self.buckets.length()
-        # for i in range(capacity_added):
-        #     self.buckets.append(LinkedList())
-        # self.capacity += capacity_added
-        #
-        # for i in range(self.buckets.length()):
-        #     if (self.buckets.get_at_index(i).length()) != 0:
-        #         g = (self.buckets.get_at_index(i))
-        #         for i in g:
-        #             self.put(i.key, i.value)
 
     def get_keys(self) -> DynamicArray:
         """
