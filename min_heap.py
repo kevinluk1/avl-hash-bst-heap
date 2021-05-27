@@ -78,7 +78,49 @@ class MinHeap:
         """
         TODO: Write this implementation
         """
-        return None
+        if self.is_empty():
+            raise MinHeapException
+        last_index = self.heap.length()-1
+        self.heap.swap(0, last_index)
+        minimum = self.heap.pop()
+
+        last_index = last_index-1
+        left_child_index = (2 * 0) +1
+        right_child_index = (2 * 0) + 2
+
+        if self.heap.length() == 2:
+            self.heap.swap(0, 1)
+            return minimum
+
+        return self.rec_remove_min(0, left_child_index, right_child_index, minimum)
+
+    def rec_remove_min(self, parent_index, left_child_index, right_child_index, minimum):
+
+        if left_child_index >= self.heap.length() or right_child_index >= self.heap.length():
+            return minimum
+
+        if self.heap[right_child_index] < self.heap[left_child_index]:
+            smallest_child_index = right_child_index
+
+        elif self.heap[left_child_index] <= self.heap[right_child_index]:
+            smallest_child_index = left_child_index
+
+        if self.heap[parent_index] < self.heap[smallest_child_index]:
+            return minimum
+
+
+        elif self.heap[parent_index] > self.heap[smallest_child_index]:
+            self.heap.swap(parent_index, smallest_child_index)
+            parent_index = smallest_child_index
+            left_child_index = (2 * parent_index) +1
+            right_child_index = (2 * parent_index) +2
+            return self.rec_remove_min(parent_index, left_child_index, right_child_index, minimum)
+
+
+
+
+
+
 
     def build_heap(self, da: DynamicArray) -> None:
         """
@@ -107,19 +149,19 @@ if __name__ == '__main__':
     #     print(h)
 
     #
-    print("\nPDF - get_min example 1")
-    print("-----------------------")
-    h = MinHeap(['fish', 'bird'])
-    print(h)
-    print(h.get_min(), h.get_min())
+    # print("\nPDF - get_min example 1")
+    # print("-----------------------")
+    # h = MinHeap(['fish', 'bird'])
+    # print(h)
+    # print(h.get_min(), h.get_min())
     #
-    #
-    # print("\nPDF - remove_min example 1")
-    # print("--------------------------")
-    # h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
-    # while not h.is_empty():
-    #     print(h, end=' ')
-    #     print(h.remove_min())
+
+    print("\nPDF - remove_min example 1")
+    print("--------------------------")
+    h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
+    while not h.is_empty():
+        print(h, end=' ')
+        print(h.remove_min())
     #
     #
     # print("\nPDF - build_heap example 1")
