@@ -48,7 +48,22 @@ class MinHeap:
         """
         TODO: Write this implementation
         """
-        pass
+        self.heap.append(node)
+        child_index = self.heap.length() - 1
+        parent_index = (child_index - 1) // 2
+
+        self.rec_add(parent_index, child_index)
+
+    def rec_add(self, parent_index, child_index):
+        if parent_index < 0:
+            return
+        if self.heap[child_index] > self.heap[parent_index]:
+            return
+        if self.heap[child_index] < self.heap[parent_index]:
+            self.heap.swap(child_index, parent_index)
+            child_index = parent_index
+            parent_index = (child_index - 1) // 2
+            self.rec_add(parent_index, child_index)
 
     def get_min(self) -> object:
         """
@@ -80,37 +95,37 @@ if __name__ == '__main__':
         h.add(value)
         print(h)
 
-    print("\nPDF - add example 2")
-    print("-------------------")
-    h = MinHeap(['fish', 'bird'])
-    print(h)
-    for value in ['monkey', 'zebra', 'elephant', 'horse', 'bear']:
-        h.add(value)
-        print(h)
-
-
-    print("\nPDF - get_min example 1")
-    print("-----------------------")
-    h = MinHeap(['fish', 'bird'])
-    print(h)
-    print(h.get_min(), h.get_min())
-
-
-    print("\nPDF - remove_min example 1")
-    print("--------------------------")
-    h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
-    while not h.is_empty():
-        print(h, end=' ')
-        print(h.remove_min())
-
-
-    print("\nPDF - build_heap example 1")
-    print("--------------------------")
-    da = DynamicArray([100, 20, 6, 200, 90, 150, 300])
-    h = MinHeap(['zebra', 'apple'])
-    print(h)
-    h.build_heap(da)
-    print(h)
-    da.set_at_index(0, 500)
-    print(da)
-    print(h)
+    # print("\nPDF - add example 2")
+    # print("-------------------")
+    # h = MinHeap(['fish', 'bird'])
+    # print(h)
+    # for value in ['monkey', 'zebra', 'elephant', 'horse', 'bear']:
+    #     h.add(value)
+    #     print(h)
+    #
+    #
+    # print("\nPDF - get_min example 1")
+    # print("-----------------------")
+    # h = MinHeap(['fish', 'bird'])
+    # print(h)
+    # print(h.get_min(), h.get_min())
+    #
+    #
+    # print("\nPDF - remove_min example 1")
+    # print("--------------------------")
+    # h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
+    # while not h.is_empty():
+    #     print(h, end=' ')
+    #     print(h.remove_min())
+    #
+    #
+    # print("\nPDF - build_heap example 1")
+    # print("--------------------------")
+    # da = DynamicArray([100, 20, 6, 200, 90, 150, 300])
+    # h = MinHeap(['zebra', 'apple'])
+    # print(h)
+    # h.build_heap(da)
+    # print(h)
+    # da.set_at_index(0, 500)
+    # print(da)
+    # print(h)
