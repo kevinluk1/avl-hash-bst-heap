@@ -69,7 +69,10 @@ class MinHeap:
         """
         TODO: Write this implementation
         """
-        return None
+        if self.is_empty():
+            raise MinHeapException
+
+        return self.heap[0]
 
     def remove_min(self) -> object:
         """
@@ -87,14 +90,14 @@ class MinHeap:
 # BASIC TESTING
 if __name__ == '__main__':
 
-    print("\nPDF - add example 1")
-    print("-------------------")
-    h = MinHeap()
-    print(h, h.is_empty())
-    for value in range(300, 200, -15):
-        h.add(value)
-        print(h)
-
+    # print("\nPDF - add example 1")
+    # print("-------------------")
+    # h = MinHeap()
+    # print(h, h.is_empty())
+    # for value in range(300, 200, -15):
+    #     h.add(value)
+    #     print(h)
+    #
     # print("\nPDF - add example 2")
     # print("-------------------")
     # h = MinHeap(['fish', 'bird'])
@@ -102,13 +105,13 @@ if __name__ == '__main__':
     # for value in ['monkey', 'zebra', 'elephant', 'horse', 'bear']:
     #     h.add(value)
     #     print(h)
+
     #
-    #
-    # print("\nPDF - get_min example 1")
-    # print("-----------------------")
-    # h = MinHeap(['fish', 'bird'])
-    # print(h)
-    # print(h.get_min(), h.get_min())
+    print("\nPDF - get_min example 1")
+    print("-----------------------")
+    h = MinHeap(['fish', 'bird'])
+    print(h)
+    print(h.get_min(), h.get_min())
     #
     #
     # print("\nPDF - remove_min example 1")
