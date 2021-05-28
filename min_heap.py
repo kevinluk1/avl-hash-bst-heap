@@ -135,49 +135,56 @@ class MinHeap:
         """
         TODO: Write this implementation
         """
-        self.heap = da
-        first_non_leaf = ((self.heap.length()-1)//2) - 1
+
+        first_non_leaf = ((da.length()-1)//2) - 1
         parent_index = first_non_leaf
 
         left_child_index = (2 * parent_index) + 1
         right_child_index = (2 * parent_index) + 2
 
         counter = parent_index
-        self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
+        returned_da = self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
+        da_to_be_heap = DynamicArray()
+        for i in range(returned_da.length()):  # de-reference returned DA, ed discussion
+            da_to_be_heap.append(returned_da[i])
+        self.heap = da_to_be_heap
+
 
     def rec_build_heap(self, counter, parent_index, left_child_index, right_child_index):
 
         if counter < 0:
-            return
+            return da
 
 
-        if left_child_index > self.heap.length() - 1 and right_child_index > self.heap.length() - 1:
+        if left_child_index > da.length() - 1 and right_child_index > da.length() - 1:
             counter = counter - 1
             parent_index = counter
             left_child_index = (2 * parent_index) + 1
             right_child_index = (2 * parent_index) + 2
             return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
 
-        if left_child_index <= self.heap.length()-1 and right_child_index <= self.heap.length()-1:
-            if self.heap[right_child_index] < self.heap[left_child_index]:
+        if left_child_index <= da.length()-1 and right_child_index <= da.length()-1:
+            if da[right_child_index] < da[left_child_index]:
                 smallest_child_index = right_child_index
-            if self.heap[left_child_index] <= self.heap[right_child_index]:
+            if da[left_child_index] <= da[right_child_index]:
                 smallest_child_index = left_child_index
 
 
-        if self.heap[parent_index] < self.heap[smallest_child_index]:
+        if da[parent_index] < da[smallest_child_index]:
             counter = counter - 1
             parent_index = counter
             left_child_index = (2 * parent_index) + 1
             right_child_index = (2 * parent_index) + 2
             return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
 
-        if self.heap[parent_index] > self.heap[smallest_child_index]:
-            self.heap.swap(parent_index, smallest_child_index)
+        if da[parent_index] > da[smallest_child_index]:
+            da.swap(parent_index, smallest_child_index)
             parent_index = smallest_child_index
             left_child_index = (2 * parent_index) + 1
             right_child_index = (2 * parent_index) + 2
             return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
+
+
 # BASIC TESTING
 if __name__ == '__main__':
 
@@ -228,6 +235,6 @@ if __name__ == '__main__':
     print(h)
     h.build_heap(da)
     print(h)
-    # da.set_at_index(0, 500)
-    # print(da)
-    # print(h)
+    da.set_at_index(0, 500)
+    print(da)
+    print(h)
