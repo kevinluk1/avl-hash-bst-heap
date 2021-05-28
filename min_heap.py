@@ -136,53 +136,55 @@ class MinHeap:
         TODO: Write this implementation
         """
 
-        first_non_leaf = ((da.length()-1)//2) - 1
-        parent_index = first_non_leaf
+        da_copy = DynamicArray()
+        for i in range(da.length()):
+            da_copy.append(da[i])
 
+        # print(da_copy is da)
+
+
+        first_non_leaf = ((da_copy.length() - 1) // 2) - 1
+        parent_index = first_non_leaf
         left_child_index = (2 * parent_index) + 1
         right_child_index = (2 * parent_index) + 2
-
         counter = parent_index
-        returned_da = self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
-        da_to_be_heap = DynamicArray()
-        for i in range(returned_da.length()):  # de-reference returned DA, ed discussion
-            da_to_be_heap.append(returned_da[i])
-        self.heap = da_to_be_heap
+
+        g = self.rec_build_heap(counter, parent_index, left_child_index, right_child_index, da_copy)
+        self.heap = g
 
 
-    def rec_build_heap(self, counter, parent_index, left_child_index, right_child_index):
+    def rec_build_heap(self, counter, parent_index, left_child_index, right_child_index, da_copy):
 
         if counter < 0:
-            return da
+            return da_copy
 
-
-        if left_child_index > da.length() - 1 and right_child_index > da.length() - 1:
+        if left_child_index > da_copy.length() - 1 and right_child_index > da_copy.length() - 1:
             counter = counter - 1
             parent_index = counter
             left_child_index = (2 * parent_index) + 1
             right_child_index = (2 * parent_index) + 2
-            return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
+            return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index, da_copy)
 
-        if left_child_index <= da.length()-1 and right_child_index <= da.length()-1:
-            if da[right_child_index] < da[left_child_index]:
+        if left_child_index <= da_copy.length()-1 and right_child_index <= da_copy.length()-1:
+            if da_copy[right_child_index] < da_copy[left_child_index]:
                 smallest_child_index = right_child_index
-            if da[left_child_index] <= da[right_child_index]:
+            if da_copy[left_child_index] <= da_copy[right_child_index]:
                 smallest_child_index = left_child_index
 
 
-        if da[parent_index] < da[smallest_child_index]:
+        if da_copy[parent_index] < da_copy[smallest_child_index]:
             counter = counter - 1
             parent_index = counter
             left_child_index = (2 * parent_index) + 1
             right_child_index = (2 * parent_index) + 2
-            return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
+            return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index, da_copy)
 
-        if da[parent_index] > da[smallest_child_index]:
-            da.swap(parent_index, smallest_child_index)
+        if da_copy[parent_index] > da_copy[smallest_child_index]:
+            da_copy.swap(parent_index, smallest_child_index)
             parent_index = smallest_child_index
             left_child_index = (2 * parent_index) + 1
             right_child_index = (2 * parent_index) + 2
-            return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index)
+            return self.rec_build_heap(counter, parent_index, left_child_index, right_child_index, da_copy)
 
 
 # BASIC TESTING
