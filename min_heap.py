@@ -105,9 +105,9 @@ class MinHeap:
         if left_child_index > self.heap.length()-1 and right_child_index > self.heap.length()-1:
             return minimum
 
-        if left_child_index > self.heap.length()-1 and right_child_index <= self.heap.length()-1:  # if one element is out of bonds and the other is not
+        if left_child_index > self.heap.length()-1 >= right_child_index:  # if one element is out of bonds and the other is not
             smallest_child_index = right_child_index
-        if right_child_index > self.heap.length()-1 and left_child_index <= self.heap.length()-1:
+        if right_child_index > self.heap.length()-1 >= left_child_index:
             smallest_child_index = left_child_index
 
         if left_child_index <= self.heap.length()-1 and right_child_index <= self.heap.length()-1:
@@ -124,8 +124,8 @@ class MinHeap:
         if self.heap[parent_index] > self.heap[smallest_child_index]:
             self.heap.swap(parent_index, smallest_child_index)
             parent_index = smallest_child_index
-            left_child_index = (2 * parent_index) +1
-            right_child_index = (2 * parent_index) +2
+            left_child_index = (2 * parent_index) + 1
+            right_child_index = (2 * parent_index) + 2
             return self.rec_remove_min(parent_index, left_child_index, right_child_index, minimum)
 
         if self.heap[parent_index] == self.heap[smallest_child_index]:
