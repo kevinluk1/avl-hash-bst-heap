@@ -78,11 +78,14 @@ class MinHeap:
         """
         TODO: Write this implementation
         """
+
+
         if self.is_empty():
             raise MinHeapException
         last_index = self.heap.length()-1
         self.heap.swap(0, last_index)
         minimum = self.heap.pop()
+
 
 
         left_child_index = 1
@@ -98,17 +101,26 @@ class MinHeap:
             self.heap.swap(0,1)
             return minimum
 
-        if left_child_index >= self.heap.length() or right_child_index >= self.heap.length():
+        if left_child_index > self.heap.length()-1 and right_child_index > self.heap.length()-1:
             return minimum
 
-        if self.heap[right_child_index] < self.heap[left_child_index]:
+        if left_child_index > self.heap.length()-1:  # if one element is out of bonds and the other is not
             smallest_child_index = right_child_index
-        elif self.heap[left_child_index] <= self.heap[right_child_index]:
+        else:
             smallest_child_index = left_child_index
+
+        if left_child_index <= self.heap.length()-1 and right_child_index <= self.heap.length()-1:
+            if self.heap[right_child_index] < self.heap[left_child_index]:
+                smallest_child_index = right_child_index
+            if self.heap[left_child_index] < self.heap[right_child_index]:
+                smallest_child_index = left_child_index
+            if self.heap[left_child_index] == self.heap[right_child_index]:
+                smallest_child_index = left_child_index
 
         if self.heap[parent_index] < self.heap[smallest_child_index]:
             return minimum
-        elif self.heap[parent_index] > self.heap[smallest_child_index]:
+
+        if self.heap[parent_index] > self.heap[smallest_child_index]:
             self.heap.swap(parent_index, smallest_child_index)
             parent_index = smallest_child_index
             left_child_index = (2 * parent_index) +1
@@ -155,13 +167,21 @@ if __name__ == '__main__':
     # print(h.get_min(), h.get_min())
     #
 
+    h = MinHeap([686, 705, 689, 706, 718, 698, 704, 720, 723, 802, 765, 699, 792, 715, 913, 721, 782, 815, 847, 896, 807, 892, 837, 960, 807, 808, 930, 851, 801, 970, 933, 754, 764, 909, 861, 950, 909, 869, 899, 935, 931, 860, 873, 904, 991, 910, 924, 972, 975, 862, 968])
+
+
+
+    print(h.remove_min())
+    print("HEAP [689, 705, 698, 706, 718, 699, 704, 720, 723, 802, 765, 807, 792, 715, 913, 721, 782, 815, 847, 896, 807, 892, 837, 960, 862, 808, 930, 851, 801, 970, 933, 754, 764, 909, 861, 950, 909, 869, 899, 935, 931, 860, 873, 904, 991, 910, 924, 972, 975, 968]")
+    print(h.__str__())
+
     print("\nPDF - remove_min example 1")
     print("--------------------------")
     h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
     while not h.is_empty():
         print(h, end=' ')
         print(h.remove_min())
-    #
+
     #
     # print("\nPDF - build_heap example 1")
     # print("--------------------------")
