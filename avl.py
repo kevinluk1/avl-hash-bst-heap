@@ -7,7 +7,7 @@
 import random
 import sys
 
-sys.setrecursionlimit(1500)
+sys.setrecursionlimit(1100)
 
 
 # from bst import *
@@ -374,7 +374,7 @@ class AVL:
         if value > node.value:
             return self.get_target(value, node.right, node.left)
 
-    def helper_get_target_parent(self, node, target_node_value):
+    def get_target_parent(self, node, target_node_value):
         """
         Helper node to get parent of target during removal
         """
@@ -387,9 +387,9 @@ class AVL:
             if node.left.value == target_node_value:
                 return node
         if target_node_value > node.value:
-            return self.helper_get_target_parent(node.right, target_node_value)
+            return self.get_target_parent(node.right, target_node_value)
         if target_node_value < node.value:
-            return self.helper_get_target_parent(node.left, target_node_value)
+            return self.get_target_parent(node.left, target_node_value)
 
     def helper_get_successor_node(self, value, right_node,
                                   parent):  # pass in the node to the right of node being removed as 'right_node'
@@ -435,11 +435,14 @@ class AVL:
             return True
 
         if self.root.right is None and self.root.left is not None:  # if 1 child
+
             self.root = self.root.left
+            self.remove_rebalance_helper(self.root)
             return True
 
         if self.root.left is None and self.root.right is not None:  # if 1 child
             self.root = self.root.right
+            self.remove_rebalance_helper(self.root)
             return True
 
         # ----------------- 2 children ----------------- #
@@ -452,15 +455,34 @@ class AVL:
 
             if successor_node is not self.root.right:
                 successor_node.left = self.root.left
+                self.root.left.parent = successor_node
+
+
                 successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
+                if successor_node.right is not None:
+                    successor_node.right.parent = successor_node_parent.left
+
                 successor_node.right = self.root.right
+                self.root.right.parent = successor_node.right
+
                 self.root = successor_node
+                self.root.parent = None
+                self.remove_rebalance_helper(self.root)
                 return True
 
             if successor_node is self.root.right:
                 successor_node.left = self.root.left
+                if self.root.left is not None:
+                    self.root.left.parent = successor_node.left
                 self.root = successor_node
+                self.root.parent = None
+                self.remove_rebalance_helper(self.root)
                 return True
+
+    def remove_rebalance_helper(self, p):
+        while p is not None:
+            self.rebalance(p)
+            p = p.parent
 
     # -----------------------------------------------------------------------------------
 
@@ -479,54 +501,91 @@ class AVL:
             return True
 
         target = self.get_target(value, self.root, 0)
-        target_parent = self.helper_get_target_parent(self.root, target.value)
+        target_parent = self.get_target_parent(self.root, target.value)
 
         if target.right is None and target.left is None:
             if target.value < target_parent.value:
                 target_parent.left = None
             if target.value > target_parent.value:
                 target_parent.right = None
+            p = target_parent
+            self.remove_rebalance_helper(p)
             return True
 
         if target.value > target_parent.value and target.right is None:  # if 1 child
             target_parent.right = target.left
+            target.left.parent = target_parent
+            p = target_parent
+            self.remove_rebalance_helper(p)
             return True
 
         if target.value > target_parent.value and target.left is None:
             target_parent.right = target.right
+            target.right.parent = target_parent
+            p = target_parent
+            self.remove_rebalance_helper(p)
             return True
 
         if target.value < target_parent.value and target.left is None:
             target_parent.left = target.right
+            target.right.parent = target_parent.left
+            p = target_parent
+            self.remove_rebalance_helper(p)
             return True
+
         if target.value < target_parent.value and target.right is None:
             target_parent.left = target.left
+            target.left.parent = target_parent.left
+            p = target_parent
+            self.remove_rebalance_helper(p)
             return True
 
         if target.right is not None and target.left is not None:  # if 2 children
+
             successor_node = self.helper_get_successor_node(0, target.right, self.root)
             successor_node_parent = self.helper_get_parent_of_successor_node(self.root, successor_node.value, target)
 
             if successor_node is not target.right:
                 successor_node.left = target.left
+                target.left.parent = successor_node.left
                 successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
+                if successor_node.right is not None:
+                    successor_node.right.parent = successor_node_parent.left
                 successor_node.right = target.right
+                target.right.parent = successor_node.right
+
                 if target_parent.value > target.value:
                     target_parent.left = successor_node
+                    successor_node.parent = target_parent.left
+                    p = target_parent
+                    self.remove_rebalance_helper(p)
                     return True
+
                 if target_parent.value <= target.value:
                     target_parent.right = successor_node
+                    successor_node.parent = target_parent.right
+                    p = target_parent
+                    self.remove_rebalance_helper(p)
                     return True
+
             if successor_node is target.right:
                 successor_node.left = target.left
-
+                target.left.parent = successor_node.left
                 if target is target_parent.left:
                     target_parent.left = successor_node
+                    successor_node.parent = target_parent.left
+                    p = target_parent
+                    self.remove_rebalance_helper(p)
                     return True
 
                 if target is target_parent.right:
                     target_parent.right = successor_node
+                    successor_node.parent = target_parent.right
+                    p = target_parent
+                    self.remove_rebalance_helper(p)
                     return True
+
+
 
 
 # ------------------- BASIC TESTING -----------------------------------------
@@ -578,23 +637,23 @@ if __name__ == '__main__':
     #     if not avl.is_valid_avl():
     #         raise Exception("PROBLEM WITH ADD OPERATION")
     # print('add() stress test finished')
-
-    print("\nPDF - method remove() example 1")
-    print("-------------------------------")
-    test_cases = (
-        ((1, 2, 3), 1),  # no AVL rotation
-        ((1, 2, 3), 2),  # no AVL rotation
-        ((1, 2, 3), 3),  # no AVL rotation
-        ((50, 40, 60, 30, 70, 20, 80, 45), 0),
-        ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
-        ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
-        ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
-    )
-    for tree, del_value in test_cases:
-        avl = AVL(tree)
-        print('INPUT  :', avl, "DEL:", del_value)
-        avl.remove(del_value)
-        print('RESULT :', avl)
+    #
+    # print("\nPDF - method remove() example 1")
+    # print("-------------------------------")
+    # test_cases = (
+    #     ((1, 2, 3), 1),  # no AVL rotation
+    #     ((1, 2, 3), 2),  # no AVL rotation
+    #     ((1, 2, 3), 3),  # no AVL rotation
+    #     ((50, 40, 60, 30, 70, 20, 80, 45), 0),
+    #     ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
+    #     ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
+    #     ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
+    # )
+    # for tree, del_value in test_cases:
+    #     avl = AVL(tree)
+    #     print('INPUT  :', avl, "DEL:", del_value)
+    #     avl.remove(del_value)
+    #     print('RESULT :', avl)
 
     # print("\nPDF - method remove() example 2")
     # print("-------------------------------")
@@ -609,7 +668,7 @@ if __name__ == '__main__':
     #     print('INPUT  :', avl, "DEL:", del_value)
     #     avl.remove(del_value)
     #     print('RESULT :', avl)
-    #
+
     # print("\nPDF - method remove() example 3")
     # print("-------------------------------")
     # case = range(-9, 16, 2)
@@ -627,14 +686,14 @@ if __name__ == '__main__':
     #     print('INPUT  :', avl, avl.root.value)
     #     avl.remove(avl.root.value)
     #     print('RESULT :', avl)
-    #
-    # print("\nPDF - method remove() example 5")
-    # print("-------------------------------")
-    # for _ in range(100):
-    #     case = list(set(random.randrange(1, 20000) for _ in range(900)))
-    #     avl = AVL(case)
-    #     for value in case[::2]:
-    #         avl.remove(value)
-    #     if not avl.is_valid_avl():
-    #         raise Exception("PROBLEM WITH REMOVE OPERATION")
-    # print('remove() stress test finished')
+    # #
+    print("\nPDF - method remove() example 5")
+    print("-------------------------------")
+    for _ in range(100):
+        case = list(set(random.randrange(1, 20000) for _ in range(900)))
+        avl = AVL(case)
+        for value in case[::2]:
+            avl.remove(value)
+        if not avl.is_valid_avl():
+            raise Exception("PROBLEM WITH REMOVE OPERATION")
+    print('remove() stress test finished')
