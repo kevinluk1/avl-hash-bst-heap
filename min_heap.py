@@ -8,7 +8,7 @@
 from a5_include import *
 import sys
 
-sys.setrecursionlimit(1175)
+sys.setrecursionlimit(1500)
 
 
 class MinHeapException(Exception):
