@@ -5,8 +5,10 @@
 
 
 import random
+import sys
+sys.setrecursionlimit(1175)
 
-
+# from bst import *
 class Stack:
     """
     Class implementing STACK ADT.
@@ -48,7 +50,7 @@ class Queue:
     Supported methods are: enqueue, dequeue, is_empty
 
     DO NOT CHANGE THIS CLASS IN ANY WAY
-    YOU ARE ALLOWED TO CREATE AND USE OBJECTS OF THIS CLASS IN YOUR SOLUTION
+        YOU ARE ALLOWED TO CREATE AND USE OBJECTS OF THIS CLASS IN YOUR SOLUTION
     """
 
     def __init__(self):
@@ -92,6 +94,9 @@ class TreeNode:
 
     def __str__(self):
         return 'AVL Node: {}'.format(self.value)
+
+    def __repr__(self):
+        return self.value
 
 
 class AVL:
@@ -166,316 +171,231 @@ class AVL:
                 s.push(node.left)
         return True
 
-    # ----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    def helper_contains(self, value, node):  # node now points to either node.left or node.right
-        if node is None:
-            return False
+    # -----------------------------------------------------------------------
 
-        if node.value == value:
-            return True
-
-        elif value < node.value:
-            return self.helper_contains(value, node.left)  # traverses
-
-        elif value > node.value:
-            return self.helper_contains(value, node.right)
-
-    def contains(self, value: object) -> bool:
-        """
-        Check to see if tree contains a node of x value
-        """
-        return self.helper_contains(value, self.root)
-
-    def get_target(self, value, node, parent):
-        """
-        Helper node to traverse to target during removal
-        """
-        if value == node.value:
-            return node
-        if value < node.value:
-            return self.get_target(value, node.left, node.left)
-        if value > node.value:
-            return self.get_target(value, node.right, node.left)
-
-    def helper_get_target_parent(self, node, target_node_value):
-        """
-        Helper node to get parent of target during removal
-        """
-        if target_node_value == node.value:
-            return None
-        if node.right is not None:
-            if node.right.value == target_node_value:
-                return node
-        if node.left is not None:
-            if node.left.value == target_node_value:
-                return node
-        if target_node_value > node.value:
-            return self.helper_get_target_parent(node.right, target_node_value)
-        if target_node_value < node.value:
-            return self.helper_get_target_parent(node.left, target_node_value)
-
-    def helper_get_successor_node(self, value, right_node,
-                                  parent):  # pass in the node to the right of node being removed as 'right_node'
-        """
-        Get in order successor node
-        """
-        if right_node is None:
-            return None
-        if right_node.left is None:
-            return right_node
-        return self.helper_get_successor_node(value, right_node.left, right_node)
-
-    def helper_get_parent_of_successor_node(self, node, successor_node_value,
-                                            target) -> int:  # find the parent of the successor node
-        """
-        Get parent node of inorder successor
-        """
-        if node.right is not None:
-            if node.right.value == successor_node_value and node.right is not target:
-                return node
-
-        if node.left is not None:
-            if node.left.value == successor_node_value and node.left is not target:
-                return node
-
-        if successor_node_value >= node.value:
-            return self.helper_get_parent_of_successor_node(node.right, successor_node_value, target)
-
-        if successor_node_value < node.value:
-            return self.helper_get_parent_of_successor_node(node.left, successor_node_value, target)
-
-    def remove_first(self) -> bool:
-        """
-        Remove first node from tree
-        """
-        if self.root is None:
-            return False
-
-        if self.root.right is None and self.root.left is None:  # if no children
-            self.root = None
-            return True
-
-        if self.root.right is None and self.root.left is not None:  # if 1 child
-            self.root = self.root.left
-            return True
-
-        if self.root.left is None and self.root.right is not None:  # if 1 child
-            self.root = self.root.right
-            return True
-
-        # 2 children
-
-        if self.root.left is not None and self.root.right is not None:
-            successor_node = self.helper_get_successor_node(0, self.root.right, self.root)
-            successor_node_parent = self.helper_get_parent_of_successor_node(self.root, successor_node.value, self.root)
-
-            # 2 sub-cases
-
-            if successor_node is not self.root.right:
-                successor_node.left = self.root.left
-                successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
-                successor_node.right = self.root.right
-                self.root = successor_node
-                return True
-
-            if successor_node is self.root.right:
-                successor_node.left = self.root.left
-                self.root = successor_node
-                return True
-
-    def rec_height(self, node):
+    def rec_rebalance(self, node):
 
         if node is None:
-            return 0
+            return
+        if self.get_balance_factor(node) < -1:
+            if self.get_balance_factor(node.left) > 0:
+                node.left = self.rotate_left(node.left)
+                node.left.parent = node
+            whatever = node.parent
+            new_sub_root = self.rotate_right(node)
+            new_sub_root.parent = whatever
+            if new_sub_root.parent is not None:
+                if new_sub_root.value < new_sub_root.parent.value:
+                    new_sub_root.parent.left = new_sub_root
+                if new_sub_root.value > new_sub_root.parent.value:
+                    new_sub_root.parent.right = new_sub_root
 
-        right_height = self.rec_height(node.right)
-        left_height = self.rec_height(node.left)
-        max_of_two_heights = max(left_height, right_height)
-        return max_of_two_heights + 1
+            if new_sub_root.parent is None:
+                self.root = new_sub_root
 
-    def height(self, node) -> int:  # need to redo to find height at a particular node
-        """
-        Finds the height of the tree recursively by comparing left height to right height for each node.
-        Recursively checks each node. Removes 1 to account for the fact that root node doesn't count as a level.
-        """
-        return self.rec_height(self.root) - 1
+        if self.get_balance_factor(node) > 1:
+            if self.get_balance_factor(node.right) < 0:
+                node.right = self.rotate_right(node.right)
+                node.right.parent = node
+            whatever = node.parent
+            new_sub_root = self.rotate_left(node)
+            new_sub_root.parent = whatever
 
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
-    # -----------------------------------------------------------------------------------------------------
+            if new_sub_root.parent is not None:
+                if new_sub_root.value < new_sub_root.parent.value:
+                    new_sub_root.parent.left = new_sub_root
+                if new_sub_root.value > new_sub_root.parent.value:
+                    new_sub_root.parent.right = new_sub_root
 
-    def is_balanced(self, node):
-        balanced = {-1, 0, 1}
+            if new_sub_root.parent is None:
+                self.root = new_sub_root
 
-        height_l = self.height(node.left)
-        height_r = self.height(node.right)
-        bf = height_l - height_r
-        if bf in balanced:
-            return True
+
+
+
         else:
-            return False
+            self.update_height(node)
+
+        self.rec_rebalance(node.parent)
+
+    def rebalance(self, node):
+
+        self.rec_rebalance(node)
+
+    def rotate_right(self, node):
+        c = node.left
+        node.left = c.right
+        if node.left is not None:
+            node.left.parent = node
+        c.right = node
+        node.parent = c
+        self.update_height(node)
+        self.update_height(c)
+        return c
+
+    def rotate_left(self, node):
+        c = node.right
+        node.right = c.left
+
+        if node.right is not None:
+            node.right.parent = node
+
+        c.left = node
+
+        node.parent = c
+
+        self.update_height(node)
+        self.update_height(c)
+        return c
+
+    def update_height(self, node):
+        if node.right is not None:
+            right_height = node.right.height
+        else:
+            right_height = - 1
+
+        if node.left is not None:
+            left_height = node.left.height
+        else:
+            left_height = -1
+
+        node.height = max(left_height, right_height) + 1
+
+    def get_balance_factor(self, node):
+        if node.right is not None:
+            right_height = node.right.height
+        else:
+            right_height = - 1
+
+        if node.left is not None:
+            left_height = node.left.height
+        else:
+            left_height = -1
+
+        balance_factor = right_height - left_height
+        return balance_factor
+
+    def get_height(self, node):
+
+        self.rec_get_height(node)
+
+    def rec_get_height(self, node):
+        if node is None:
+            return
+        if node.left is not None:
+            node_left_height = node.left.height
+        else:
+            node_left_height = -1
+
+        if node.right is not None:
+            node_right_height = node.right.height
+        else:
+            node_right_height = -1
+
+        node.height = max(node_left_height, node_right_height) + 1
+
+        self.rec_get_height(node.parent)
+
+
+    # -----------------------------------------------------------------------
+
+    def rec_add(self, parent, new_node):
+
+        if parent.value < new_node.value and parent.right is None:
+            parent.right = new_node
+            new_node.parent = parent
+            return
+
+        if parent.value > new_node.value and parent.left is None:
+            parent.left = new_node
+            new_node.parent = parent
+            return
+
+
+        if parent.value > new_node.value:
+            self.rec_add(parent.left, new_node)
+        if parent.value < new_node.value:
+            self.rec_add(parent.right, new_node)
 
     def add(self, value: object) -> None:
         """
-        Initialize and add node to tree
+        TODO: Write your implementation
         """
-
         new_node = TreeNode(value)
-        parent = None
-        node = self.root  # pointer, always start traversing from the root
-
-        if self.contains(value):  # if the value is already in the tree, the method should do nothing
-            pass
+        parent = self.root
 
         if self.root is None:
             self.root = new_node
-            parent = new_node
+            return
 
-        # traversal
-        while node is not None:  # node keeps traversing until node is 'None'
-            parent = node  # while traversing, __the parent of the node being checked__ updates with each while loop (traversal)
-            if new_node.value < node.value:
-                node = node.left
-                continue
-            if new_node.value >= node.value:
-                node = node.right
-                continue
-
-        # insertion
         if self.root is not None:
-            if value < parent.value:
-                parent.left = new_node
-            if value >= parent.value:
-                parent.right = new_node
-        if self.is_balanced(new_node):
-            pass
-        if not self.is_balanced(new_node):
-            print(str(new_node) + " is not balanced")
-            # rotations
-            # LL
-            # RR
-            # LR
-            # RL
+            self.rec_add(parent, new_node)
 
-    def remove(self, value) -> bool:
+        self.get_height(new_node.parent)
+        self.rebalance(new_node.parent)
+
+
+
+
+
+    def remove(self, value: object) -> bool:
         """
-        Remove specified node from tree
+        TODO: Write your implementation
         """
-        if not self.contains(value):
-            return False
-
-        if self.root is None:
-            return False
-
-        if value == self.root.value:
-            self.remove_first()
-            return True
-
-        target = self.get_target(value, self.root, 0)
-        target_parent = self.helper_get_target_parent(self.root, target.value)
-
-        if target.right is None and target.left is None:  # if no children
-            if target.value < target_parent.value:
-                target_parent.left = None
-            if target.value > target_parent.value:
-                target_parent.right = None
-            return True
-
-        if target.value > target_parent.value and target.right is None:  # if 1 child
-            target_parent.right = target.left
-            return True
-        if target.value > target_parent.value and target.left is None:
-            target_parent.right = target.right
-            return True
-        if target.value < target_parent.value and target.left is None:
-            target_parent.left = target.right
-            return True
-        if target.value < target_parent.value and target.right is None:
-            target_parent.left = target.left
-            return True
-
-        if target.right is not None and target.left is not None:  # if 2 children
-            successor_node = self.helper_get_successor_node(0, target.right, self.root)
-            successor_node_parent = self.helper_get_parent_of_successor_node(self.root, successor_node.value, target)
-
-            if successor_node is not target.right:
-                successor_node.left = target.left
-                successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
-                successor_node.right = target.right
-
-                if target_parent.value > target.value:
-                    target_parent.left = successor_node
-                    return True
-                if target_parent.value <= target.value:
-                    target_parent.right = successor_node
-                    return True
-
-            if successor_node is target.right:
-                successor_node.left = target.left
-
-                if target is target_parent.left:
-                    target_parent.left = successor_node
-                    return True
-
-                if target is target_parent.right:
-                    target_parent.right = successor_node
-                    return True
+        pass
 
 
 # ------------------- BASIC TESTING -----------------------------------------
 
 
 if __name__ == '__main__':
+    """ add() example #1 """
 
-    print("\nPDF - method add() example 1")
-    print("----------------------------")
-    test_cases = (
-        (1, 2, 3),  # RR
-        (3, 2, 1),  # LL
-        (1, 3, 2),  # RL
-        (3, 1, 2),  # LR
-    )
-    for case in test_cases:
-        avl = AVL(case)
-        print(avl)
-
-    # print("\nPDF - method add() example 2")
+    # print("\nPDF - method add() example 1")
     # print("----------------------------")
     # test_cases = (
-    #     (10, 20, 30, 40, 50),   # RR, RR
-    #     (10, 20, 30, 50, 40),   # RR, RL
-    #     (30, 20, 10, 5, 1),     # LL, LL
-    #     (30, 20, 10, 1, 5),     # LL, LR
-    #     (5, 4, 6, 3, 7, 2, 8),  # LL, RR
-    #     (range(0, 30, 3)),
-    #     (range(0, 31, 3)),
-    #     (range(0, 34, 3)),
-    #     (range(10, -10, -2)),
-    #     ('A', 'B', 'C', 'D', 'E'),
-    #     (1, 1, 1, 1),
+    #     (1, 2, 3),  # RR
+    #     (3, 2, 1),  # LL
+    #     (1, 3, 2),  # RL
+    #     (3, 1, 2),  # LR
     # )
     # for case in test_cases:
     #     avl = AVL(case)
-    #     print('INPUT  :', case)
-    #     print('RESULT :', avl)
+    #     print(avl)
     #
-    # print("\nPDF - method add() example 3")
-    # print("----------------------------")
-    # for _ in range(100):
-    #     case = list(set(random.randrange(1, 20000) for _ in range(900)))
-    #     avl = AVL()
-    #     for value in case:
-    #         avl.add(value)
-    #     if not avl.is_valid_avl():
-    #         raise Exception("PROBLEM WITH ADD OPERATION")
-    # print('add() stress test finished')
+
+
+    print("\nPDF - method add() example 2")
+    print("----------------------------")
+    test_cases = (
+        (10, 20, 30, 40, 50),   # RR, RR
+        (10, 20, 30, 50, 40),   # RR, RL
+        (30, 20, 10, 5, 1),     # LL, LL
+        (30, 20, 10, 1, 5),     # LL, LR
+        (5, 4, 6, 3, 7, 2, 8),  # LL, RR
+        (range(0, 30, 3)),
+        (range(0, 31, 3)),
+        (range(0, 34, 3)),
+        (range(10, -10, -2)),
+        ('A', 'B', 'C', 'D', 'E'),
+        (1, 1, 1, 1),
+    )
+    for case in test_cases:
+        avl = AVL(case)
+        print('INPUT  :', case)
+        print('RESULT :', avl)
     #
+    print("\nPDF - method add() example 3")
+    print("----------------------------")
+    for _ in range(100):
+        case = list(set(random.randrange(1, 20000) for _ in range(900)))
+        avl = AVL()
+        for value in case:
+            avl.add(value)
+        if not avl.is_valid_avl():
+            raise Exception("PROBLEM WITH ADD OPERATION")
+    print('add() stress test finished')
+
     # print("\nPDF - method remove() example 1")
     # print("-------------------------------")
     # test_cases = (
