@@ -6,7 +6,7 @@
 
 import random
 import sys
-sys.setrecursionlimit(1175)
+sys.setrecursionlimit(1500)
 
 # from bst import *
 class Stack:
