@@ -6,7 +6,9 @@
 
 import random
 import sys
+
 sys.setrecursionlimit(1500)
+
 
 # from bst import *
 class Stack:
@@ -296,7 +298,6 @@ class AVL:
 
         self.rec_get_height(node.parent)
 
-
     # -----------------------------------------------------------------------
 
     def rec_add(self, parent, new_node):
@@ -310,7 +311,6 @@ class AVL:
             parent.left = new_node
             new_node.parent = parent
             return
-
 
         if parent.value > new_node.value:
             self.rec_add(parent.left, new_node)
@@ -334,15 +334,199 @@ class AVL:
         self.get_height(new_node.parent)
         self.rebalance(new_node.parent)
 
+    # -----------------------------------------------------------------------------------
+    def helper_contains(self, value, node):  # node now points to either node.left or node.right
+        if node is None:
+            return False
 
+        if node.value == value:
+            return True
 
+        elif value < node.value:
+            return self.helper_contains(value, node.left)  # traverses
 
+        elif value > node.value:
+            return self.helper_contains(value, node.right)
+
+    def contains(self, value: object) -> bool:
+        """
+        Check to see if tree contains a node of x value
+        """
+        return self.helper_contains(value, self.root)
+
+    def get_first(self) -> object:
+        """
+        Returns the first ndoe
+        """
+        if self.root is not None:
+            return self.root.value
+        else:
+            return None
+
+    def get_target(self, value, node, parent):
+        """
+        Helper node to traverse to target during removal
+        """
+        if value == node.value:
+            return node
+        if value < node.value:
+            return self.get_target(value, node.left, node.left)
+        if value > node.value:
+            return self.get_target(value, node.right, node.left)
+
+    def helper_get_target_parent(self, node, target_node_value):
+        """
+        Helper node to get parent of target during removal
+        """
+        if target_node_value == node.value:
+            return None
+        if node.right is not None:
+            if node.right.value == target_node_value:
+                return node
+        if node.left is not None:
+            if node.left.value == target_node_value:
+                return node
+        if target_node_value > node.value:
+            return self.helper_get_target_parent(node.right, target_node_value)
+        if target_node_value < node.value:
+            return self.helper_get_target_parent(node.left, target_node_value)
+
+    def helper_get_successor_node(self, value, right_node,
+                                  parent):  # pass in the node to the right of node being removed as 'right_node'
+        """
+        Get in order successor node
+        """
+        if right_node is None:
+            return None
+        if right_node.left is None:
+            return right_node
+        return self.helper_get_successor_node(value, right_node.left, right_node)
+
+    def helper_get_parent_of_successor_node(self, node,
+                                            successor_node_value,
+                                            target) -> int:  # find the parent of the successor node
+        """
+        Get parent node of inorder successor
+        """
+        if node.right is not None:
+            if node.right.value == successor_node_value and node.right is not target:
+                return node
+
+        if node.left is not None:
+            if node.left.value == successor_node_value and node.left is not target:
+                return node
+
+        if successor_node_value >= node.value:
+            return self.helper_get_parent_of_successor_node(node.right, successor_node_value, target)
+
+        if successor_node_value < node.value:
+            return self.helper_get_parent_of_successor_node(node.left, successor_node_value, target)
+
+    def remove_first(self) -> bool:
+        """
+        Remove first node from tree
+        """
+
+        if self.root is None:
+            return False
+
+        if self.root.right is None and self.root.left is None:  # if no children
+            self.root = None
+            return True
+
+        if self.root.right is None and self.root.left is not None:  # if 1 child
+            self.root = self.root.left
+            return True
+
+        if self.root.left is None and self.root.right is not None:  # if 1 child
+            self.root = self.root.right
+            return True
+
+        # ----------------- 2 children ----------------- #
+
+        if self.root.left is not None and self.root.right is not None:
+            successor_node = self.helper_get_successor_node(0, self.root.right, self.root)
+            successor_node_parent = self.helper_get_parent_of_successor_node(self.root, successor_node.value, self.root)
+
+            # ----------------- 2 sub-cases ----------------- #
+
+            if successor_node is not self.root.right:
+                successor_node.left = self.root.left
+                successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
+                successor_node.right = self.root.right
+                self.root = successor_node
+                return True
+
+            if successor_node is self.root.right:
+                successor_node.left = self.root.left
+                self.root = successor_node
+                return True
+
+    # -----------------------------------------------------------------------------------
 
     def remove(self, value: object) -> bool:
         """
         TODO: Write your implementation
         """
-        pass
+        if not self.contains(value):
+            return False
+
+        if self.root is None:
+            return False
+
+        if value == self.root.value:
+            self.remove_first()
+            return True
+
+        target = self.get_target(value, self.root, 0)
+        target_parent = self.helper_get_target_parent(self.root, target.value)
+
+        if target.right is None and target.left is None:
+            if target.value < target_parent.value:
+                target_parent.left = None
+            if target.value > target_parent.value:
+                target_parent.right = None
+            return True
+
+        if target.value > target_parent.value and target.right is None:  # if 1 child
+            target_parent.right = target.left
+            return True
+
+        if target.value > target_parent.value and target.left is None:
+            target_parent.right = target.right
+            return True
+
+        if target.value < target_parent.value and target.left is None:
+            target_parent.left = target.right
+            return True
+        if target.value < target_parent.value and target.right is None:
+            target_parent.left = target.left
+            return True
+
+        if target.right is not None and target.left is not None:  # if 2 children
+            successor_node = self.helper_get_successor_node(0, target.right, self.root)
+            successor_node_parent = self.helper_get_parent_of_successor_node(self.root, successor_node.value, target)
+
+            if successor_node is not target.right:
+                successor_node.left = target.left
+                successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
+                successor_node.right = target.right
+                if target_parent.value > target.value:
+                    target_parent.left = successor_node
+                    return True
+                if target_parent.value <= target.value:
+                    target_parent.right = successor_node
+                    return True
+            if successor_node is target.right:
+                successor_node.left = target.left
+
+                if target is target_parent.left:
+                    target_parent.left = successor_node
+                    return True
+
+                if target is target_parent.right:
+                    target_parent.right = successor_node
+                    return True
 
 
 # ------------------- BASIC TESTING -----------------------------------------
@@ -364,55 +548,54 @@ if __name__ == '__main__':
     #     print(avl)
     #
 
-
-    print("\nPDF - method add() example 2")
-    print("----------------------------")
-    test_cases = (
-        (10, 20, 30, 40, 50),   # RR, RR
-        (10, 20, 30, 50, 40),   # RR, RL
-        (30, 20, 10, 5, 1),     # LL, LL
-        (30, 20, 10, 1, 5),     # LL, LR
-        (5, 4, 6, 3, 7, 2, 8),  # LL, RR
-        (range(0, 30, 3)),
-        (range(0, 31, 3)),
-        (range(0, 34, 3)),
-        (range(10, -10, -2)),
-        ('A', 'B', 'C', 'D', 'E'),
-        (1, 1, 1, 1),
-    )
-    for case in test_cases:
-        avl = AVL(case)
-        print('INPUT  :', case)
-        print('RESULT :', avl)
-    #
-    print("\nPDF - method add() example 3")
-    print("----------------------------")
-    for _ in range(100):
-        case = list(set(random.randrange(1, 20000) for _ in range(900)))
-        avl = AVL()
-        for value in case:
-            avl.add(value)
-        if not avl.is_valid_avl():
-            raise Exception("PROBLEM WITH ADD OPERATION")
-    print('add() stress test finished')
-
-    # print("\nPDF - method remove() example 1")
-    # print("-------------------------------")
+    # print("\nPDF - method add() example 2")
+    # print("----------------------------")
     # test_cases = (
-    #     ((1, 2, 3), 1),  # no AVL rotation
-    #     ((1, 2, 3), 2),  # no AVL rotation
-    #     ((1, 2, 3), 3),  # no AVL rotation
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 0),
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
+    #     (10, 20, 30, 40, 50),  # RR, RR
+    #     (10, 20, 30, 50, 40),  # RR, RL
+    #     (30, 20, 10, 5, 1),  # LL, LL
+    #     (30, 20, 10, 1, 5),  # LL, LR
+    #     (5, 4, 6, 3, 7, 2, 8),  # LL, RR
+    #     (range(0, 30, 3)),
+    #     (range(0, 31, 3)),
+    #     (range(0, 34, 3)),
+    #     (range(10, -10, -2)),
+    #     ('A', 'B', 'C', 'D', 'E'),
+    #     (1, 1, 1, 1),
     # )
-    # for tree, del_value in test_cases:
-    #     avl = AVL(tree)
-    #     print('INPUT  :', avl, "DEL:", del_value)
-    #     avl.remove(del_value)
+    # for case in test_cases:
+    #     avl = AVL(case)
+    #     print('INPUT  :', case)
     #     print('RESULT :', avl)
-    #
+    # #
+    # print("\nPDF - method add() example 3")
+    # print("----------------------------")
+    # for _ in range(100):
+    #     case = list(set(random.randrange(1, 20000) for _ in range(900)))
+    #     avl = AVL()
+    #     for value in case:
+    #         avl.add(value)
+    #     if not avl.is_valid_avl():
+    #         raise Exception("PROBLEM WITH ADD OPERATION")
+    # print('add() stress test finished')
+
+    print("\nPDF - method remove() example 1")
+    print("-------------------------------")
+    test_cases = (
+        ((1, 2, 3), 1),  # no AVL rotation
+        ((1, 2, 3), 2),  # no AVL rotation
+        ((1, 2, 3), 3),  # no AVL rotation
+        ((50, 40, 60, 30, 70, 20, 80, 45), 0),
+        ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
+        ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
+        ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
+    )
+    for tree, del_value in test_cases:
+        avl = AVL(tree)
+        print('INPUT  :', avl, "DEL:", del_value)
+        avl.remove(del_value)
+        print('RESULT :', avl)
+
     # print("\nPDF - method remove() example 2")
     # print("-------------------------------")
     # test_cases = (
