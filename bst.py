@@ -624,7 +624,7 @@ class BST:
 
 # BASIC TESTING - PDF EXAMPLES
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 #
 #    """ add() example #1 """
 #     # print("\nPDF - method add() example 1")
@@ -687,9 +687,9 @@ class BST:
     # print(tree.remove(-2))
     # print(tree)
     #
-    # tree = BST([-7, 0, -4, -3, -4, -2, 6, 6])
-    # print(tree.remove(-3))
-    # print(tree)
+    tree = BST([21, 9, 3, 0, 6, 15, 12, 18, 27, 24, 30, 33])
+    print(tree.remove(21))
+    print(tree)
     #
     # """ remove() example 1 """
     # print("\nPDF - method remove() example 1")
