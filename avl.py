@@ -437,11 +437,13 @@ class AVL:
         if self.root.right is None and self.root.left is not None:  # if 1 child
 
             self.root = self.root.left
+            self.root.parent = None
             self.remove_rebalance_helper(self.root)
             return True
 
         if self.root.left is None and self.root.right is not None:  # if 1 child
             self.root = self.root.right
+            self.root.parent = None
             self.remove_rebalance_helper(self.root)
             return True
 
@@ -456,27 +458,27 @@ class AVL:
             if successor_node is not self.root.right:
                 successor_node.left = self.root.left
                 self.root.left.parent = successor_node
-
-
                 successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
                 if successor_node.right is not None:
-                    successor_node.right.parent = successor_node_parent.left
-
+                    successor_node.right.parent = successor_node_parent
                 successor_node.right = self.root.right
-                self.root.right.parent = successor_node.right
+                self.root.right.parent = successor_node
+                successor_node.parent = None
 
                 self.root = successor_node
-                self.root.parent = None
+
                 self.remove_rebalance_helper(self.root)
+                self.get_height(successor_node_parent)
                 return True
 
             if successor_node is self.root.right:
                 successor_node.left = self.root.left
                 if self.root.left is not None:
-                    self.root.left.parent = successor_node.left
+                    self.root.left.parent = successor_node
                 self.root = successor_node
                 self.root.parent = None
                 self.remove_rebalance_helper(self.root)
+                self.get_height(successor_node_parent)
                 return True
 
     def remove_rebalance_helper(self, p):
@@ -528,14 +530,14 @@ class AVL:
 
         if target.value < target_parent.value and target.left is None:
             target_parent.left = target.right
-            target.right.parent = target_parent.left
+            target.right.parent = target_parent
             p = target_parent
             self.remove_rebalance_helper(p)
             return True
 
         if target.value < target_parent.value and target.right is None:
             target_parent.left = target.left
-            target.left.parent = target_parent.left
+            target.left.parent = target_parent
             p = target_parent
             self.remove_rebalance_helper(p)
             return True
@@ -550,39 +552,43 @@ class AVL:
                 target.left.parent = successor_node.left
                 successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
                 if successor_node.right is not None:
-                    successor_node.right.parent = successor_node_parent.left
+                    successor_node.right.parent = successor_node_parent
                 successor_node.right = target.right
                 target.right.parent = successor_node.right
 
                 if target_parent.value > target.value:
                     target_parent.left = successor_node
-                    successor_node.parent = target_parent.left
+                    successor_node.parent = target_parent
                     p = target_parent
                     self.remove_rebalance_helper(p)
+                    self.get_height(successor_node_parent)
                     return True
 
                 if target_parent.value <= target.value:
                     target_parent.right = successor_node
-                    successor_node.parent = target_parent.right
+                    successor_node.parent = target_parent
                     p = target_parent
                     self.remove_rebalance_helper(p)
+                    self.get_height(successor_node_parent)
                     return True
 
             if successor_node is target.right:
                 successor_node.left = target.left
-                target.left.parent = successor_node.left
+                target.left.parent = successor_node #.left
                 if target is target_parent.left:
                     target_parent.left = successor_node
-                    successor_node.parent = target_parent.left
+                    successor_node.parent = target_parent
                     p = target_parent
                     self.remove_rebalance_helper(p)
+                    self.get_height(successor_node_parent)
                     return True
 
                 if target is target_parent.right:
                     target_parent.right = successor_node
-                    successor_node.parent = target_parent.right
+                    successor_node.parent = target_parent
                     p = target_parent
                     self.remove_rebalance_helper(p)
+                    self.get_height(successor_node_parent)
                     return True
 
 
@@ -594,106 +600,112 @@ class AVL:
 if __name__ == '__main__':
     """ add() example #1 """
 
-    # print("\nPDF - method add() example 1")
-    # print("----------------------------")
-    # test_cases = (
-    #     (1, 2, 3),  # RR
-    #     (3, 2, 1),  # LL
-    #     (1, 3, 2),  # RL
-    #     (3, 1, 2),  # LR
-    # )
-    # for case in test_cases:
-    #     avl = AVL(case)
-    #     print(avl)
-    #
+    print("\nPDF - method add() example 1")
+    print("----------------------------")
+    test_cases = (
+        (1, 2, 3),  # RR
+        (3, 2, 1),  # LL
+        (1, 3, 2),  # RL
+        (3, 1, 2),  # LR
+    )
+    for case in test_cases:
+        avl = AVL(case)
+        print(avl)
+        print(avl.is_valid_avl())
 
-    # print("\nPDF - method add() example 2")
-    # print("----------------------------")
-    # test_cases = (
-    #     (10, 20, 30, 40, 50),  # RR, RR
-    #     (10, 20, 30, 50, 40),  # RR, RL
-    #     (30, 20, 10, 5, 1),  # LL, LL
-    #     (30, 20, 10, 1, 5),  # LL, LR
-    #     (5, 4, 6, 3, 7, 2, 8),  # LL, RR
-    #     (range(0, 30, 3)),
-    #     (range(0, 31, 3)),
-    #     (range(0, 34, 3)),
-    #     (range(10, -10, -2)),
-    #     ('A', 'B', 'C', 'D', 'E'),
-    #     (1, 1, 1, 1),
-    # )
-    # for case in test_cases:
-    #     avl = AVL(case)
-    #     print('INPUT  :', case)
-    #     print('RESULT :', avl)
-    # #
-    # print("\nPDF - method add() example 3")
-    # print("----------------------------")
-    # for _ in range(100):
-    #     case = list(set(random.randrange(1, 20000) for _ in range(900)))
-    #     avl = AVL()
-    #     for value in case:
-    #         avl.add(value)
-    #     if not avl.is_valid_avl():
-    #         raise Exception("PROBLEM WITH ADD OPERATION")
-    # print('add() stress test finished')
-    #
-    # print("\nPDF - method remove() example 1")
-    # print("-------------------------------")
-    # test_cases = (
-    #     ((1, 2, 3), 1),  # no AVL rotation
-    #     ((1, 2, 3), 2),  # no AVL rotation
-    #     ((1, 2, 3), 3),  # no AVL rotation
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 0),
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
-    # )
-    # for tree, del_value in test_cases:
-    #     avl = AVL(tree)
-    #     print('INPUT  :', avl, "DEL:", del_value)
-    #     avl.remove(del_value)
-    #     print('RESULT :', avl)
 
-    # print("\nPDF - method remove() example 2")
-    # print("-------------------------------")
-    # test_cases = (
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 20),  # RR
-    #     ((50, 40, 60, 30, 70, 20, 80, 15), 40),  # LL
-    #     ((50, 40, 60, 30, 70, 20, 80, 35), 20),  # RL
-    #     ((50, 40, 60, 30, 70, 20, 80, 25), 40),  # LR
-    # )
-    # for tree, del_value in test_cases:
-    #     avl = AVL(tree)
-    #     print('INPUT  :', avl, "DEL:", del_value)
-    #     avl.remove(del_value)
-    #     print('RESULT :', avl)
-
-    # print("\nPDF - method remove() example 3")
-    # print("-------------------------------")
-    # case = range(-9, 16, 2)
-    # avl = AVL(case)
-    # for del_value in case:
-    #     print('INPUT  :', avl, del_value)
-    #     avl.remove(del_value)
-    #     print('RESULT :', avl)
-    #
-    # print("\nPDF - method remove() example 4")
-    # print("-------------------------------")
-    # case = range(0, 34, 3)
-    # avl = AVL(case)
-    # for _ in case[:-2]:
-    #     print('INPUT  :', avl, avl.root.value)
-    #     avl.remove(avl.root.value)
-    #     print('RESULT :', avl)
-    # #
-    print("\nPDF - method remove() example 5")
-    print("-------------------------------")
+    print("\nPDF - method add() example 2")
+    print("----------------------------")
+    test_cases = (
+        (10, 20, 30, 40, 50),  # RR, RR
+        (10, 20, 30, 50, 40),  # RR, RL
+        (30, 20, 10, 5, 1),  # LL, LL
+        (30, 20, 10, 1, 5),  # LL, LR
+        (5, 4, 6, 3, 7, 2, 8),  # LL, RR
+        (range(0, 30, 3)),
+        (range(0, 31, 3)),
+        (range(0, 34, 3)),
+        (range(10, -10, -2)),
+        ('A', 'B', 'C', 'D', 'E'),
+        (1, 1, 1, 1),
+    )
+    for case in test_cases:
+        avl = AVL(case)
+        print('INPUT  :', case)
+        print('RESULT :', avl)
+        print(avl.is_valid_avl())
+    print("\nPDF - method add() example 3")
+    print("----------------------------")
     for _ in range(100):
         case = list(set(random.randrange(1, 20000) for _ in range(900)))
-        avl = AVL(case)
-        for value in case[::2]:
-            avl.remove(value)
+        avl = AVL()
+        for value in case:
+            avl.add(value)
         if not avl.is_valid_avl():
-            raise Exception("PROBLEM WITH REMOVE OPERATION")
-    print('remove() stress test finished')
+            raise Exception("PROBLEM WITH ADD OPERATION")
+    print('add() stress test finished')
+
+    print("\nPDF - method remove() example 1")
+    print("-------------------------------")
+    test_cases = (
+        ((1, 2, 3), 1),  # no AVL rotation
+        ((1, 2, 3), 2),  # no AVL rotation
+        ((1, 2, 3), 3),  # no AVL rotation
+        ((50, 40, 60, 30, 70, 20, 80, 45), 0),
+        ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
+        ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
+        ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
+    )
+    for tree, del_value in test_cases:
+        avl = AVL(tree)
+        print('INPUT  :', avl, "DEL:", del_value)
+        avl.remove(del_value)
+        print('RESULT :', avl)
+        print(avl.is_valid_avl())
+
+    print("\nPDF - method remove() example 2")
+    print("-------------------------------")
+    test_cases = (
+        ((50, 40, 60, 30, 70, 20, 80, 45), 20),  # RR
+        ((50, 40, 60, 30, 70, 20, 80, 15), 40),  # LL
+        ((50, 40, 60, 30, 70, 20, 80, 35), 20),  # RL
+        ((50, 40, 60, 30, 70, 20, 80, 25), 40),  # LR
+    )
+    for tree, del_value in test_cases:
+        avl = AVL(tree)
+        print('INPUT  :', avl, "DEL:", del_value)
+        avl.remove(del_value)
+        print('RESULT :', avl)
+        print(avl.is_valid_avl())
+
+    print("\nPDF - method remove() example 3")
+    print("-------------------------------")
+    case = range(-9, 16, 2)
+    avl = AVL(case)
+    for del_value in case:
+        print('INPUT  :', avl, del_value)
+        avl.remove(del_value)
+        print('RESULT :', avl)
+
+
+
+    print("\nPDF - method remove() example 4")
+    print("-------------------------------")
+    case = range(0, 34, 3)
+    avl = AVL(case)
+    for _ in case[:-2]:
+        print('INPUT  :', avl, avl.root.value)
+        avl.remove(avl.root.value)
+        print('RESULT :', avl)
+        print(avl.is_valid_avl())
+    # # #
+    # print("\nPDF - method remove() example 5")
+    # print("-------------------------------")
+    # for _ in range(100):
+    #     case = list(set(random.randrange(1, 20000) for _ in range(900)))
+    #     avl = AVL(case)
+    #     for value in case[::2]:
+    #         avl.remove(value)
+    #     if not avl.is_valid_avl():
+    #         raise Exception("PROBLEM WITH REMOVE OPERATION")
+    # print('remove() stress test finished')
