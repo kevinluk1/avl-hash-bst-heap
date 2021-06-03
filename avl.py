@@ -583,7 +583,8 @@ class AVL:
 
             if successor_node is target.right:
                 successor_node.left = target.left
-                target.left.parent = successor_node #.left
+                target.left.parent = successor_node
+
                 if target is target_parent.left:
                     target_parent.left = successor_node
                     successor_node.parent = target_parent
@@ -593,12 +594,20 @@ class AVL:
                     return True
 
                 if target is target_parent.right:
+
                     target_parent.right = successor_node
-                    successor_node.parent = target_parent
-                    p = target_parent
-                    self.remove_rebalance_helper(p)
-                    self.get_height(successor_node_parent)
-                    return True
+
+                    if target_parent.right.right is not None:
+                        successor_node.parent = target_parent
+                        p = target_parent
+                        self.remove_rebalance_helper(p.right)
+                        self.get_height(successor_node_parent)
+                        return True
+                    if target_parent.right.right is None:
+                        p = target
+                        self.remove_rebalance_helper(p.right)
+                        self.get_height(successor_node_parent)
+                        return True
 
 
 
@@ -607,6 +616,15 @@ class AVL:
 
 
 if __name__ == '__main__':
+    avl = AVL([40,21,7,25,43])
+    case = [40,21,7,25,43]
+    for value in case:
+        avl.remove(value)
+        if not avl.is_valid_avl():
+            print(value)
+            print(avl.__str__())
+            raise Exception("PROBLEM WITH REMOVE OPERATION")
+# print('remove() stress test finished')
 #     """ add() example #1 """
 # #
 #     print("\nPDF - method add() example 1")
@@ -698,23 +716,31 @@ if __name__ == '__main__':
 
 #
 # #
-    print("\nPDF - method remove() example 4")
-    print("-------------------------------")
-    case = range(0, 34, 3)
-    avl = AVL(case)
-    for _ in case[:-2]:
-        print('INPUT  :', avl, avl.root.value)
-        avl.remove(avl.root.value)
-        print('RESULT :', avl)
-        print(avl.is_valid_avl())
-#     # # #
-#     print("\nPDF - method remove() example 5")
+#     print("\nPDF - method remove() example 4")
 #     print("-------------------------------")
-#     for _ in range(100):
-#         case = list(set(random.randrange(1, 20000) for _ in range(900)))
-#         avl = AVL(case)
-#         for value in case[::2]:
-#             avl.remove(value)
-#         if not avl.is_valid_avl():
-#             raise Exception("PROBLEM WITH REMOVE OPERATION")
-#     print('remove() stress test finished')
+#     case = range(0, 34, 3)
+#     avl = AVL(case)
+#     for _ in case[:-2]:
+#         print('INPUT  :', avl, avl.root.value)
+#         avl.remove(avl.root.value)
+#         print('RESULT :', avl)
+#         print(avl.is_valid_avl())
+#     # # #
+
+
+    print("\nPDF - method remove() example 5")
+    print("-------------------------------")
+    for _ in range(100):
+        case = list(set(random.randrange(1, 50) for _ in range(5)))
+        avl = AVL(case)
+        for value in case[::2]:
+            avl.remove(value)
+            if not avl.is_valid_avl():
+                raise Exception("PROBLEM WITH REMOVE OPERATION")
+    print('remove() stress test finished')
+
+
+ #    avl = AVL([7495, 1144, 17081, 2266, 14366])
+ #    avl.remove(7495)
+ #    print(avl.is_valid_avl())
+ #
