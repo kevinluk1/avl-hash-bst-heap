@@ -1,7 +1,7 @@
 # Course: CS261 - Data Structures
-# Student Name:
-# Assignment:
-# Description:
+# Student Name: Kevin Luk
+# Assignment: 5
+# Description: avl
 
 
 import random
@@ -422,6 +422,15 @@ class AVL:
         if successor_node_value < node.value:
             return self.helper_get_parent_of_successor_node(node.left, successor_node_value, target)
 
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
     def remove_first(self) -> bool:
         """
         Remove first node from tree
@@ -495,6 +504,15 @@ class AVL:
             p = p.parent
 
     # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------
+
+
 
     def remove(self, value: object) -> bool:
         """
@@ -617,14 +635,14 @@ class AVL:
 
 
 if __name__ == '__main__':
-    avl = AVL([35, -60, -79, -68, 5, -11, 20, 58, 74])
-    case = [35, -60, -79, -68, 5, -11, 20, 58, 74]
+    avl = AVL([29, -53, -70, -81, -66, -43, 49, 46, 98 ])
+    case = [29, -53, -70, -81, -66, -43, 49, 46, 98]
     for value in case:
         avl.remove(value)
         if not avl.is_valid_avl():
             print(value)
             print(avl.__str__())
-            raise Exception("PROBLEM WITH REMOVE OPERATION")
+            # raise Exception("PROBLEM WITH REMOVE OPERATION")
 # print('remove() stress test finished')
 #     """ add() example #1 """
 # #
@@ -729,16 +747,16 @@ if __name__ == '__main__':
 #     # # #
 
 
-    print("\nPDF - method remove() example 5")
-    print("-------------------------------")
-    for _ in range(100):
-        case = list(set(random.randrange(1, 500) for _ in range(5000)))
-        avl = AVL(case)
-        for value in case[::2]:
-            avl.remove(value)
-        if not avl.is_valid_avl():
-            raise Exception("PROBLEM WITH REMOVE OPERATION")
-    print('remove() stress test finished')
+    # print("\nPDF - method remove() example 5")
+    # print("-------------------------------")
+    # for _ in range(100):
+    #     case = list(set(random.randrange(1, 500) for _ in range(5000)))
+    #     avl = AVL(case)
+    #     for value in case[::2]:
+    #         avl.remove(value)
+    #     if not avl.is_valid_avl():
+    #         raise Exception("PROBLEM WITH REMOVE OPERATION")
+    # print('remove() stress test finished')
 
 
  #    avl = AVL([7495, 1144, 17081, 2266, 14366])

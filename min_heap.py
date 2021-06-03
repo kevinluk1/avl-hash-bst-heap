@@ -1,7 +1,7 @@
 # Course: CS261 - Data Structures
-# Student Name:
-# Assignment:
-# Description:
+# Student Name: Kevin Luk
+# Assignment: 5
+# Description: min_heap
 
 
 # Import pre-written DynamicArray and LinkedList classes
