@@ -593,17 +593,18 @@ class AVL:
                     return True
 
                 if target is target_parent.right:
-                    successor_node.parent = target_parent
+                    # successor_node.parent = target_parent
                     target_parent.right = successor_node
 
                     if target_parent.right.right is not None:
-                        # successor_node.parent = target_parent
+                        successor_node.parent = target_parent
                         p = target_parent
                         self.remove_rebalance_helper(p.right)
                         self.get_height(successor_node_parent)
                         return True
 
                     if target_parent.right.right is None:
+                        successor_node.parent = target_parent
                         p = target
                         self.remove_rebalance_helper(p.right)
                         self.get_height(successor_node_parent)
