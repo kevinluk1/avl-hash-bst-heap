@@ -459,22 +459,21 @@ class AVL:
                 successor_node.left = self.root.left
                 self.root.left.parent = successor_node
                 successor_node_parent.left = successor_node.right  # replaces successor node with successor node's right child (there won't be a left child ever)
+
                 if successor_node.right is not None:
                     successor_node.right.parent = successor_node_parent
 
-
                 successor_node.right = self.root.right
-
                 self.root.right.parent = successor_node
                 self.root = successor_node
                 successor_node.parent = None
-
                 self.root.parent = None
 
                 if self.root.right.right is not None:
                     self.remove_rebalance_helper(self.root.right)
                     self.get_height(successor_node_parent)
                     return True
+
                 if self.root.right.right is None:
                     self.remove_rebalance_helper(self.root)
                     self.get_height(successor_node_parent)
@@ -594,15 +593,16 @@ class AVL:
                     return True
 
                 if target is target_parent.right:
-
+                    successor_node.parent = target_parent
                     target_parent.right = successor_node
 
                     if target_parent.right.right is not None:
-                        successor_node.parent = target_parent
+                        # successor_node.parent = target_parent
                         p = target_parent
                         self.remove_rebalance_helper(p.right)
                         self.get_height(successor_node_parent)
                         return True
+
                     if target_parent.right.right is None:
                         p = target
                         self.remove_rebalance_helper(p.right)
@@ -616,8 +616,8 @@ class AVL:
 
 
 if __name__ == '__main__':
-    avl = AVL([40,21,7,25,43])
-    case = [40,21,7,25,43]
+    avl = AVL([35, -60, -79, -68, 5, -11, 20, 58, 74])
+    case = [35, -60, -79, -68, 5, -11, 20, 58, 74]
     for value in case:
         avl.remove(value)
         if not avl.is_valid_avl():
@@ -731,12 +731,12 @@ if __name__ == '__main__':
     print("\nPDF - method remove() example 5")
     print("-------------------------------")
     for _ in range(100):
-        case = list(set(random.randrange(1, 50) for _ in range(5)))
+        case = list(set(random.randrange(1, 500) for _ in range(5000)))
         avl = AVL(case)
         for value in case[::2]:
             avl.remove(value)
-            if not avl.is_valid_avl():
-                raise Exception("PROBLEM WITH REMOVE OPERATION")
+        if not avl.is_valid_avl():
+            raise Exception("PROBLEM WITH REMOVE OPERATION")
     print('remove() stress test finished')
 
 
