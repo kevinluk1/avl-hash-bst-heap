@@ -1,8 +1,3 @@
-# Course: CS261 - Data Structures
-# Student Name: Kevin Luk
-# Assignment: Assignment 5
-# Description: hash map
-
 
 # Import pre-written DynamicArray and LinkedList classes
 from a5_include import *
