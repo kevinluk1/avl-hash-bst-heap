@@ -1,8 +1,3 @@
-# Course: CS261 - Data Structures
-# Student Name: Kevin Luk
-# Assignment: 5
-# Description: avl
-
 
 import random
 import sys
